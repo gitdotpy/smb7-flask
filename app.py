@@ -4,18 +4,22 @@ from flask_login import UserMixin
 
 app = Flask(__name__)
 # database instance
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 # connects app file to db
-app.config['SQLALCHEMY_DATBASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # secret key for security
 app.config['SECRET_KEY'] = 'thisissecretkey'
 db.init_app(app)
+
 
 # create table
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(80), nullable=False)
+
+db.create_all(app=app)
 
 @app.route('/')
 def home():
